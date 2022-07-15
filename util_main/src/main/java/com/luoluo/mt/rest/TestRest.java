@@ -7,10 +7,13 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -27,9 +30,11 @@ import java.util.List;
 @RequestMapping("/test")
 public class TestRest {
 
-    @GetMapping("/test1")
-    @ApiOperation(value = "test1", notes = "test1")
-    String test1(@RequestPart(value = "file") MultipartFile file) throws IOException {
+    @Autowired private HttpServletResponse response;
+
+    @PostMapping("/test1")
+    @ApiOperation(value = "下载信息", httpMethod = "POST", notes = "下载符合条件的Excel",produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    void test1(@RequestPart(value = "file") MultipartFile file) throws IOException {
 
         // 导入数据
         Workbook wb = WorkbookFactory.create(file.getInputStream());
@@ -37,10 +42,11 @@ public class TestRest {
         excelImportValid.addRuleClass(RuleCheckEx.class);
         List<RuleCheckEx> sucData = excelImportValid.getCellDataToArray(ExcelDataTypeEnum.SUC, RuleCheckEx.class);
         List<RuleCheckEx> failData = excelImportValid.getCellDataToArray(ExcelDataTypeEnum.FAIL, RuleCheckEx.class);
-        // 把失败的数据删除
+        // 把成功的数据删除
         excelImportValid.clearRowAndSetStyle(ExcelDataTypeEnum.SUC);
 
-        return "test1......";
+        excelImportValid.downloadDirect(response,"AAAA.xls");
+
     }
 
 }

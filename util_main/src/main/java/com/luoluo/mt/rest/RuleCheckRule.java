@@ -18,6 +18,8 @@ public class RuleCheckRule extends AbstractValidRule {
     public void validProcess(ValidResult validResult) {
 
         log.info("===");
+        validResult.setInvalidDesc("错误的数据");
+
     }
 
     @Override

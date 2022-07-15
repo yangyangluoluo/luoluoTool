@@ -21,12 +21,11 @@ import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -763,6 +762,44 @@ public class ExcelImportValid<T>{
          }
          String url = gmisUploadFile.uploadStream(fileName, is);
          return url;
+     }
+
+     /**
+      * @author lijianguo
+      * @Date 2022/7/15 17:04
+      * 直接下载文本
+      **/
+     public void downloadDirect(HttpServletResponse response, String fileName){
+
+         workbook.getSheetAt(0).setDefaultRowHeight((short) 600);
+         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+         try {
+             workbook.write(bos);
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
+         byte[] byteArray = bos.toByteArray();
+         InputStream is = new ByteArrayInputStream(byteArray);
+
+         response.setContentType("application/octet-stream;charset=ISO8859-1");
+         try {
+             response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, "UTF-8"));
+         } catch (UnsupportedEncodingException e) {
+             log.error(e);
+         }
+         byte[] buffer = new byte[1024];
+         try {
+             BufferedInputStream bis = new BufferedInputStream(is);
+             OutputStream os = response.getOutputStream();
+             int i = bis.read(buffer);
+             while (i != -1) {
+                 os.write(buffer, 0, i);
+                 i = bis.read(buffer);
+                 os.flush();
+             }
+         } catch (IOException e) {
+             log.error(e);
+         }
      }
 
      /**
