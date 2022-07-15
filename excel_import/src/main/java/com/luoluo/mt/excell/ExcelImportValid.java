@@ -9,6 +9,8 @@ import com.luoluo.mt.excell.batch.BatchProcess;
 import com.luoluo.mt.excell.batch.BatchProcessResult;
 import com.luoluo.mt.excell.batch.BatchThread;
 import com.luoluo.mt.excell.rule.*;
+import com.luoluo.mt.excell.util.ExcelCacheKeyUtil;
+import com.luoluo.mt.excell.util.ExcelCellGetUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -269,27 +271,16 @@ public class ExcelImportValid<T>{
             if (rule == null){
                 continue;
             }
-            if (rule.validType() == ValidTypeEnum.USER_CUSTOMER){
-                if (rule.empty() == false){
-                    validRowRuleList.add(new ValidLengthRule(i, rule.sum(), rule.failDesc(), rule.minLength(), rule.maxLength(), true));
-                }
-                Map objectMap =  SpringUtil.getBeansOfType(rule.validClass());
-                if (ObjectUtil.isNotNull(objectMap)&& objectMap.values().size() > 0){
-                    AbstractValidRule validRule = (AbstractValidRule) objectMap.values().iterator().next();
-                    validRule.setColStart(i);
-                    validRule.setColSum(rule.sum());
-                    validRule.setFailDesc(rule.failDesc());
-                    addRule(validRule);
-                }
-            }else {
-                if (rule.validType().equals(ValidTypeEnum.NOT_EMPTY)){
-                    validRowRuleList.add(new ValidLengthRule(i, rule.sum(), rule.failDesc(), rule.minLength(), rule.maxLength()));
-                }else {
-                    if (rule.empty() == false){
-                        validRowRuleList.add(new ValidLengthRule(i, rule.sum(), rule.failDesc(), rule.minLength(), rule.maxLength(), true));
-                    }
-                    addRule(rule.validType(),rule.failDesc(), i, rule.sum());
-                }
+            if (rule.empty() == false){
+                validRowRuleList.add(new ValidLengthRule(i, rule.sum(), rule.failDesc(), rule.minLength(), rule.maxLength(), true));
+            }
+            Map objectMap =  SpringUtil.getBeansOfType(rule.validClass());
+            if (ObjectUtil.isNotNull(objectMap)&& objectMap.values().size() > 0) {
+                AbstractValidRule validRule = (AbstractValidRule) objectMap.values().iterator().next();
+                validRule.setColStart(i);
+                validRule.setColSum(rule.sum());
+                validRule.setFailDesc(rule.failDesc());
+                addRule(validRule);
             }
         }
         return true;

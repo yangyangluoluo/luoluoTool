@@ -1,4 +1,4 @@
-package com.luoluo.mt.excell;
+package com.luoluo.mt.excell.util;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import lombok.Data;
  * 请输入类的简介
  **/
 @Data
-public class ThreadData {
+public class ThreadDataUtil {
 
     /**
      * @author lijianguo

@@ -14,8 +14,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExcelValidRule {
 
-    /** 验证的类型 **/
-    ValidTypeEnum validType() default ValidTypeEnum.NOT_EMPTY;
+    /**  **/
+    Class validClass() default Object.class;
 
     /** 失败的说明 **/
     String failDesc();
@@ -30,9 +30,6 @@ public @interface ExcelValidRule {
     int minLength() default 1;
 
     /** 最大的长度 **/
-    int maxLength() default 10000;
-
-    /**  **/
-    Class validClass() default Object.class;
+    int maxLength() default 100000;
 
 }
