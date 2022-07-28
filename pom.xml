@@ -6,7 +6,8 @@
 	<modules>
 		<module>excel_import</module>
 		<module>util_main</module>
-	</modules>
+        <module>selenium_test</module>
+    </modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
